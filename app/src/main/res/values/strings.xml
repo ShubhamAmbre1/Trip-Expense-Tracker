@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">Trip Expense Tracker</string>
+    <string name="app_name">TripExpenseTracker</string>
+    <string name="username">Username</string>
+    <string name="login">Sign In</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="signup">Sign Up</string>
+    <string name="loginhere">Already have an account? <u>Login</u></string>
+    <string name="name">Name</string>
+    <string name="signup_head">SignUp</string>
+    <string name="signuphere">Don\'t have an account? <u>Sign Up</u></string>
 </resources>
