@@ -7,7 +7,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -76,6 +75,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 SharedPrefManager.getInstance(this).logout();
                 finish();
                 startActivity(new Intent(this, Login.class));
+                break;
+            case R.id.nav_location:
+                startActivity(new Intent(this, Location.class));
                 break;
         }
         return true;
