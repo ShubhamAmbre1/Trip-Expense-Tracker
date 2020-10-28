@@ -1,32 +1,51 @@
 package com.example.tripexpensetracker;
 
+import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class ExpenseTracker extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
+    private static final int RESULT_LOAD_IMAGE = 1;
     //Drawer variables
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
     private TextView textViewUsername, textViewUserEmail;
+
+    //Checkpermission
+    private static final String CAMERA = Manifest.permission.CAMERA;
 
 
     //Testing Recycler View
@@ -36,39 +55,117 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
 
+    //Floating action button
+    FloatingActionButton fab;
+
+    //Camera
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    ImageView imageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expense_tracker);
 
+        getCameraPermission();
+        bottomSheetDrawer();
         createDrawerLayout();
         initImageBitmap();
+    }
+
+    private void getCameraPermission() {
+        String[] permissions = {CAMERA};
+
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+        } else {
+                ActivityCompat.requestPermissions(this, permissions, REQUEST_IMAGE_CAPTURE);
+        }
+
+    }
+
+
+    void bottomSheetDrawer(){
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
+                        ExpenseTracker.this, R.style.BottomSheetDialogTheme);
+                View bottomSheetView = LayoutInflater.from(getApplicationContext())
+                        .inflate(
+                                R.layout.bottom_drawer_layout,
+                                (LinearLayout)findViewById(R.id.bottom_sheet)
+                        );
+                bottomSheetView.findViewById(R.id.add_image).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        try {
+                            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                        } catch (ActivityNotFoundException e) {
+                            // display error state to the user
+                            Toast.makeText(ExpenseTracker.this, "Error Taking Image", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                bottomSheetView.findViewById(R.id.add_expense).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //TO DO: add expense and images in the database
+                        Toast.makeText(ExpenseTracker.this, "Expense Added", Toast.LENGTH_SHORT).show();
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+                bottomSheetDialog.setContentView(bottomSheetView);
+                bottomSheetDialog.show();
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_IMAGE_CAPTURE:
+                if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+
+                    Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+                    //to generate random file name
+                    String fileName = "tempimg.jpg";
+
+
+                    try {
+                        Bundle extras = data.getExtras();
+                        Bitmap photo = (Bitmap) extras.get("data");
+                        //captured image set in imageview
+                        imageView = findViewById(R.id.show_image);
+                        imageView.setImageBitmap(photo);
+                    } catch (Exception e) {
+                        Toast.makeText(this, "Not displaying image", Toast.LENGTH_SHORT).show();
+//                        e.printStackTrace();
+                    }
+                }
+        }
     }
 
     private void initImageBitmap(){
         Log.d(TAG, "initImageBitmap: prepareing bitmap.");
 
-//        mImageUrls.add("https://c1.staticflickr.com/5/4636/25316407448_de5fbf183d_o.jpg");
         mNames.add("Shubham Ambre");
-
-//        mImageUrls.add("https://i.redd.it/tpsnoz5bzo501.jpg");
         mNames.add("Aditya Sarwankar");
-
-//        mImageUrls.add("https://i.redd.it/qn7f9oqu7o501.jpg");
         mNames.add("Nitesh Chawan");
-
-//        mImageUrls.add("https://i.redd.it/j6myfqglup501.jpg");
         mNames.add("Mandar noob");
-
-
-//        mImageUrls.add("https://i.redd.it/0h2gm1ix6p501.jpg");
+        mNames.add("Chotu");
+        mNames.add("Sarvesh");
+        mNames.add("Shubham Ambre");
+        mNames.add("Aditya Sarwankar");
+        mNames.add("Nitesh Chawan");
+        mNames.add("Mandar noob");
         mNames.add("Chotu");
 
-//        mImageUrls.add("https://i.redd.it/k98uzl68eh501.jpg");
-        mNames.add("Sarvesh");
-
-
-//
 
         initRecyclerView();
     }
@@ -88,6 +185,7 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
         //Display recyclerView in linear horizontal format
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
+
 
 
 

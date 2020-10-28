@@ -66,25 +66,25 @@ public class ShowLocation extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void getDeviceLocation(){
+    private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: getting the devices current Location");
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        try{
+        try {
             final Task location = mFusedLocationProviderClient.getLastLocation();
             location.addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
-                    if(task.isSuccessful() && task.getResult() != null){
+                    if (task.isSuccessful() && task.getResult() != null) {
                         Log.d(TAG, "onComplete: found loaction");
                         Location currentLocation = (Location) task.getResult();
-                        Log.d(TAG, "ERROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR");
+
 //                        moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
 //                                DEFAULT_ZOOM);
 
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM));
-                    }else {
+                    } else {
                         Log.d(TAG, "onComplete: current Loction is null");
                         Toast.makeText(getApplicationContext(), "unable to get location", Toast.LENGTH_SHORT).show();
                     }
@@ -101,12 +101,12 @@ public class ShowLocation extends AppCompatActivity implements NavigationView.On
 //    }
 
     //This works fine
-    private void getLocationPermission(){
-        String[] permissions = {FINE_LOCATION,COARSE_LOCATION};
+    private void getLocationPermission() {
+        String[] permissions = {FINE_LOCATION, COARSE_LOCATION};
 
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ){
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            if(ContextCompat.checkSelfPermission(getApplicationContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mLocationPermissionGranted = true;
 //                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
                 initMap();
@@ -118,7 +118,7 @@ public class ShowLocation extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void initMap(){
+    private void initMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -126,8 +126,13 @@ public class ShowLocation extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(getApplicationContext(), "Map working", Toast.LENGTH_SHORT).show();
                 mMap = googleMap;
 
-                if(mLocationPermissionGranted){
+                if (mLocationPermissionGranted) {
                     getDeviceLocation();
+                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                        return;
+                    }
+                    mMap.setMyLocationEnabled(true);
                 }
             }
         });

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -32,13 +34,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String TAG = "Location";
     private static final int ERROR_DIALOG_REQUEST = 9001;
 
+    //
+    CardView locationButton, expenseButton;
+    Button logoutButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        buttonClick();
+
         isServicesOk();
         createDrawerLayout();
+    }
+
+    public void buttonClick(){
+        locationButton = findViewById(R.id.location_button_dashboard);
+        expenseButton = findViewById(R.id.expenses_button_dashboard);
+        logoutButton = findViewById(R.id.logout_button_dashboard);
+
+        locationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), ShowLocation.class));
+            }
+        });
+
+        expenseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), ExpenseTracker.class));
+            }
+        });
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPrefManager.getInstance(getApplicationContext()).logout();
+                finish();
+                startActivity(new Intent(getApplicationContext(), Login.class));
+            }
+        });
     }
 
     //For Drawer

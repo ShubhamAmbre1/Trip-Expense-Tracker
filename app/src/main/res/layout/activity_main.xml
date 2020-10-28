@@ -232,7 +232,8 @@
                 android:layout_height="120dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="8dp"
-                app:cardElevation="2dp">
+                app:cardElevation="2dp"
+                android:id="@+id/location_button_dashboard">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -265,7 +266,8 @@
                 android:layout_marginLeft="18dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="8dp"
-                app:cardElevation="2dp">
+                app:cardElevation="2dp"
+                android:id="@+id/image_button_dashboard">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -306,7 +308,8 @@
                 android:layout_height="120dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="8dp"
-                app:cardElevation="2dp">
+                app:cardElevation="2dp"
+                android:id="@+id/expenses_button_dashboard">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -369,6 +372,7 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/logout_button_dashboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
