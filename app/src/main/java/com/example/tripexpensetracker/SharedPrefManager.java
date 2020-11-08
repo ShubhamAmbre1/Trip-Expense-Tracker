@@ -3,10 +3,6 @@ package com.example.tripexpensetracker;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
-
 public class SharedPrefManager { //singleton //To check if user is logged in or not and also for logout //To store the login state of the user in the mobile
     private static SharedPrefManager instance;
     private static Context mCtx;
@@ -18,7 +14,6 @@ public class SharedPrefManager { //singleton //To check if user is logged in or 
 
     private SharedPrefManager(Context context) {
         mCtx = context;
-
     }
 
     public static synchronized SharedPrefManager getInstance(Context context) {

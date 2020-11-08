@@ -5,17 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="#000000"
     tools:context=".Login">
 
-#    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.426"
         android:layout_marginHorizontal="10dp"
-        android:background="#121212"
         android:elevation="6dp"
         tools:layout_editor_absoluteX="0dp">
 
@@ -26,7 +24,6 @@
             android:fontFamily="@font/poppinsbold"
             android:gravity="center"
             android:text="@string/login"
-            android:textColor="#ffffff"
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -40,8 +37,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:textColorHint="#ffffff"
-            app:boxStrokeColor="#ffffff"
             android:hint="@string/username"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

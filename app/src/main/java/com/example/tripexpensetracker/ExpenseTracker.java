@@ -188,14 +188,6 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
 
 
 
-
-
-
-
-
-
-
-
     //For Drawer
     @Override
     public void onBackPressed() {

@@ -1,8 +1,5 @@
 package com.example.tripexpensetracker;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,10 +7,14 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -35,15 +36,28 @@ public class Login extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private TextView signUp;
 
+    public static int status = 0;
+
+    private static final String TAG = "Login";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Please wait...");
         //To check if user is already logged in.
         if(SharedPrefManager.getInstance(this).isLoggedIn()){
             finish();
-            startActivity(new Intent(this, MainActivity.class));
+            //TO DO: Redirect to startTripACtivity if trip is not start else
+            //if(tripActive()){
+
+             //   Log.d(TAG, "tripActive(): Working");
+              //  Toast.makeText(this, "TripActiveWorks", Toast.LENGTH_SHORT).show();
+           //j     startActivity(new Intent(this, StartTripActivity.class));
+            //} else {
+                startActivity(new Intent(this, MainActivity.class));
+            //}
             return;
         }
 
@@ -64,6 +78,66 @@ public class Login extends AppCompatActivity {
         clickableSignUpText();
     }
 
+    private boolean tripActive(){
+        final String username = SharedPrefManager.getInstance(this).getUsername();
+
+        Log.d(TAG, "tripActive(): is running");
+        //Check trip status
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                Constants.URL_TRIP_ACTIVE,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        progressDialog.dismiss();
+
+
+                        Log.d(TAG, "tripActive(): getting response");
+                        try{
+                            JSONObject obj = new JSONObject(response);
+                            Log.d(TAG, "tripActive(): Working");
+                            Toast.makeText(getApplicationContext(), obj.getInt("activeStatus"), Toast.LENGTH_SHORT).show();
+                            if(!obj.getBoolean("error")){
+                                status = obj.getInt("activeStatus");
+                                Toast.makeText(Login.this, obj.getInt("activeStatus"), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(Login.this, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch(JSONException e){
+                            Toast.makeText(Login.this, "Not Getting requests Working", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "tripActive(): Try not working");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        Toast.makeText(
+                                getApplicationContext(),
+                                error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                return params;
+            }
+        };
+
+        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
+        if (status == 0){
+            return false;
+        }
+        return true;
+    }
+
     private void userLogin(){
         final String username = username_.getText().toString().trim();
         final String password = password_.getText().toString().trim();
@@ -74,7 +148,7 @@ public class Login extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.dismiss();
+                        //progressDialog.dismiss();
                         try {
                             JSONObject obj = new JSONObject(response);
                             if(!obj.getBoolean("error")){
@@ -84,9 +158,16 @@ public class Login extends AppCompatActivity {
                                                 obj.getString("username"),
                                                 obj.getString("email")
                                         );
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(intent);
-                                finish();
+                                //finish();
+
+                                Log.d(TAG, "tripActive(): Working login working");
+                                //if(tripActive()){
+                                  //  startActivity(new Intent(getApplicationContext(), StartTripActivity.class));
+                                   // Toast.makeText(getApplicationContext(), obj.getInt("activeStatus"), Toast.LENGTH_SHORT).show();
+                               // } else {
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    startActivity(intent);
+                                //}
                             }else{
                                 Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_LONG).show();
                             }

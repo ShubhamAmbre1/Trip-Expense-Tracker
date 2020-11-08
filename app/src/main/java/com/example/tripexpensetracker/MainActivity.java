@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(available == ConnectionResult.SUCCESS){
 //            return true;
-            Toast.makeText(this, "Services Running", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Services Running", Toast.LENGTH_SHORT).show();
 
         } else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
             Log.d(TAG, "isServiceOk: an error occured but we can fix it");
