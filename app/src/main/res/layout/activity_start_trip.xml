@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@color/colorPrimaryBlack"
     tools:context=".StartTripActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,6 +24,7 @@
         android:fontFamily="@font/poppinsbold"
         android:gravity="center"
         android:text="Start Trip"
+        android:textColor="@color/textcolor"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -38,6 +39,8 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:hint="Total People"
+        android:textColorHint="@color/textcolor"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintTop_toBottomOf="@+id/textView">
@@ -46,7 +49,6 @@
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_username_dark"
             android:fontFamily="@font/poppinsmedium"
             tools:targetApi="jelly_bean" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -58,6 +60,8 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:hint="Expect Expense"
+        android:textColorHint="@color/textcolor"
+
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutUsername"
         tools:layout_editor_absoluteX="0dp">
 
@@ -66,7 +70,6 @@
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_pass"
             android:fontFamily="@font/poppinsmedium"
             tools:targetApi="jelly_bean" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -77,6 +80,8 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:hint="Names (eg. shubahm, aditya, ...)"
+            android:textColorHint="@color/textcolor"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword">
@@ -85,7 +90,6 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/ic_username_dark"
                 android:fontFamily="@font/poppinsmedium"
                 tools:targetApi="jelly_bean" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -101,6 +105,7 @@
     <Button
         android:id="@+id/buttonLogin"
         style="@style/Widget.AppCompat.Button.Colored"
+        android:background="@color/buttoncolor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -109,17 +114,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progress" />
 
-    <TextView
-        android:id="@+id/signUpText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:fontFamily="@font/poppinsmedium"
-        android:text="@string/signuphere"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLogin"
-        tools:targetApi="jelly_bean" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

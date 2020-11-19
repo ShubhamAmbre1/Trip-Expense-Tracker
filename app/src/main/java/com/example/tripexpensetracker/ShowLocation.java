@@ -30,6 +30,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -124,6 +125,8 @@ public class ShowLocation extends AppCompatActivity implements NavigationView.On
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 Toast.makeText(getApplicationContext(), "Map working", Toast.LENGTH_SHORT).show();
+                boolean success = googleMap.setMapStyle(new MapStyleOptions(getResources()
+                        .getString(R.string.style_json)));
                 mMap = googleMap;
 
                 if (mLocationPermissionGranted) {

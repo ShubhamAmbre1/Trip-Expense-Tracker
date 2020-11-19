@@ -7,6 +7,7 @@
     tools:context=".MainActivity"
     android:id="@+id/drawer_layout"
     android:fitsSystemWindows="true"
+    android:background="@color/colorPrimaryBlack"
     >
 
     <LinearLayout
@@ -21,14 +22,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginLeft="25dp">
+            android:layout_marginLeft="40dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
+                android:fontFamily="@font/poppinsbold"
                 android:text="Dashboard"
-                android:textColor="#5E5E5E"
+                android:textColor="@color/textcolor"
                 android:textSize="24dp" />
 
             <View
@@ -36,7 +37,7 @@
                 android:layout_height="6dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="8dp"
-                android:background="@drawable/bg_view">
+                android:background="@color/cardbackground">
 
             </View>
 
@@ -45,9 +46,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="24dp"
-            android:fontFamily="@font/roboto_medium"
+            android:fontFamily="@font/poppinsmedium"
             android:text="this vacation time for you discription."
-            android:textColor="#5E5E5E"
+            android:textColor="@color/textcolor"
             android:textSize="18dp" />
 
 
@@ -60,7 +61,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg"
+                android:background="@color/cardbackground"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -71,20 +72,24 @@
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_mediumitalic"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/poppinsbold"
                         android:text="Trip Location"
                         android:textColor="#ffff"
-                        android:textSize="18dp" />
+                        android:textSize="20dp" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
 
-                        <ImageView
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="28dp"
+                            android:text="Mumbai"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:textColor="@color/textcolor"
+                            android:textSize="20dp"
                             android:layout_alignParentRight="true"
                             />
 
@@ -115,7 +120,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:fontFamily="@font/roboto_medium"
-                            android:text="21 C"
+                            android:text="15000 Rs"
                             android:textColor="#ffff"
                             android:textSize="18dp" />
 
@@ -140,7 +145,7 @@
                             android:layout_height="wrap_content"
                             android:text="No. of People :"
                             android:textColor="#ffff"
-                            android:fontFamily="@font/roboto_medium"/>
+                            android:fontFamily="@font/poppinsmedium"/>
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -169,7 +174,7 @@
                             android:layout_height="wrap_content"
                             android:text="Total Expense :"
                             android:textColor="#ffff"
-                            android:fontFamily="@font/roboto_medium"/>
+                            android:fontFamily="@font/poppinsmedium"/>
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -206,9 +211,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:fontFamily="@font/roboto_medium"
+                android:fontFamily="@font/poppinsbold"
                 android:text="start new vacation"
-                android:textColor="#5E5E5E"
+                android:textColor="@color/textcolor"
                 android:textSize="18dp" />
 
             <View
@@ -239,19 +244,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="8dp"
-                    android:background="@drawable/bg_view">
+                    android:background="@color/cardbackground">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_bold"
+                        android:fontFamily="@font/poppinsbold"
                         android:text="Location"
                         android:textColor="#ffff"
                         android:textSize="18dp" />
 
                     <ImageView
                         android:layout_width="wrap_content"
-                        android:layout_height="80dp"
+                        android:layout_height="75dp"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentBottom="true"
                         android:src="@drawable/ic_location" />
@@ -273,19 +278,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="8dp"
-                    android:background="@drawable/bg_view">
+                    android:background="@color/cardbackground">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_bold"
+                        android:fontFamily="@font/poppinsbold"
                         android:text="Capture Image "
                         android:textColor="#ffff"
                         android:textSize="18dp" />
 
                     <ImageView
                         android:layout_width="wrap_content"
-                        android:layout_height="80dp"
+                        android:layout_height="70dp"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentBottom="true"
                         android:src="@drawable/ic_camera" />
@@ -315,12 +320,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="8dp"
-                    android:background="@drawable/bg_view">
+                    android:background="@color/cardbackground">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_bold"
+                        android:fontFamily="@font/poppinsbold"
                         android:text="Expense"
                         android:textColor="#ffff"
                         android:textSize="18dp" />
@@ -348,12 +353,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="8dp"
-                    android:background="@drawable/bg_view">
+                    android:background="@color/cardbackground">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_bold"
+                        android:fontFamily="@font/poppinsbold"
                         android:text="Profile"
                         android:textColor="#ffff"
                         android:textSize="18dp" />
@@ -377,7 +382,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginHorizontal="70dp"
-            android:background="@drawable/bg_view"
+            android:background="@color/buttoncolor"
+            android:fontFamily="@font/poppinsbold"
             android:text="Logout"
             android:textColor="#ffff"
             />
@@ -393,7 +399,7 @@
             android:layout_height="?attr/actionBarSize"
             android:id="@+id/toolbar"
 
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             android:elevation="4dp"/>
 
@@ -406,6 +412,8 @@
         android:id="@+id/nav_view"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/drawer_menu"
+        android:background="@color/colorPrimaryBlack"
+        app:itemTextColor="@color/textcolor"
         android:layout_gravity = "start"/>
 
 

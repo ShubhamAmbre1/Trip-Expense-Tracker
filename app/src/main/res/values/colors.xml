@@ -3,4 +3,14 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#4CAF50</color>
+
+    <!-- Dark Theme -->
+    <color name="colorPrimaryBlack">#2D2F31</color>
+    <color name="colorPrimaryDarkBlack">#000000</color>
+    <color name="colorAccentBlack">@color/colorAccent</color>
+    <color name="backgroundcolor">#303030</color>
+    <color name="cardbackground">#424242</color>
+    <color name="textcolor">#ffffff</color>
+    <color name="tintcolor">#ffffff</color>
+    <color name="buttoncolor">#2196f3</color>
 </resources>

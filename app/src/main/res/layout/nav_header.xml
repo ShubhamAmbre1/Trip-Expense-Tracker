@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    android:background="#DD3E51"
+    android:background="@color/cardbackground"
     android:gravity="bottom"
     android:padding="20dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
