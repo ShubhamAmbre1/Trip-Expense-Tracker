@@ -60,7 +60,8 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
 
     //Camera
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    ImageView imageView;
+    private ImageView imageView;
+    View bottomSheetView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +93,7 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
             public void onClick(View view) {
                 final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
                         ExpenseTracker.this, R.style.BottomSheetDialogTheme);
-                View bottomSheetView = LayoutInflater.from(getApplicationContext())
+                bottomSheetView = LayoutInflater.from(getApplicationContext())
                         .inflate(
                                 R.layout.bottom_drawer_layout,
                                 (LinearLayout)findViewById(R.id.bottom_sheet)
@@ -103,6 +104,7 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
                         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         try {
                             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                            Toast.makeText(ExpenseTracker.this, "Taking Photo", Toast.LENGTH_SHORT).show();
                         } catch (ActivityNotFoundException e) {
                             // display error state to the user
                             Toast.makeText(ExpenseTracker.this, "Error Taking Image", Toast.LENGTH_SHORT).show();
@@ -126,9 +128,10 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         switch (requestCode) {
             case REQUEST_IMAGE_CAPTURE:
-                if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+                if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK & null != data) {
 
                     Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -136,16 +139,14 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
                     //to generate random file name
                     String fileName = "tempimg.jpg";
 
-
                     try {
-                        Bundle extras = data.getExtras();
-                        Bitmap photo = (Bitmap) extras.get("data");
+                        Bitmap photo = (Bitmap) data.getExtras().get("data");
                         //captured image set in imageview
-                        imageView = findViewById(R.id.show_image);
+
+                        imageView = (ImageView) bottomSheetView.findViewById(R.id.show_image);
                         imageView.setImageBitmap(photo);
                     } catch (Exception e) {
-                        Toast.makeText(this, "Not displaying image", Toast.LENGTH_SHORT).show();
-//                        e.printStackTrace();
+                        Toast.makeText(this, "Not working", Toast.LENGTH_SHORT).show();
                     }
                 }
         }

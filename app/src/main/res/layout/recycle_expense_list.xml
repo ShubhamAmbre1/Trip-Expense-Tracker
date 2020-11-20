@@ -13,6 +13,7 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/show_image_test"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@mipmap/ic_launcher"/>
@@ -41,6 +42,23 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/edit_expense"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit"
+                android:layout_alignParentRight="true"
+                android:background="@color/buttoncolor"
+                />
+            </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
 
