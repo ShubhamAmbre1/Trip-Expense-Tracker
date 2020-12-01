@@ -1,13 +1,17 @@
 package com.example.tripexpensetracker;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,18 +21,22 @@ import java.util.ArrayList;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
     private static final String TAG = "RecyclerViewAdapter";
-
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    View bottomSheetView;
     //Initialize variables for imagesNames and imagesUrls
     private ArrayList<String> mImageNames = new ArrayList<>();
-//    private ArrayList<String> mImages = new ArrayList<>();
+    private ArrayList<String> mImages = new ArrayList<>();
+    private ArrayList<String> mAmounts = new ArrayList<>();
+
     private Context mContext;
 
     //***************************************************************************************************************************************
     //RecyclerViewAdapter : Constructor
     //It takes in 3 arguments Context: calling class name, imageNames, imageUrl
-    public RecyclerViewAdapter(Context mContext, ArrayList<String> mImageNames){
+    public RecyclerViewAdapter(Context mContext, ArrayList<String> mImageNames, ArrayList<String> mAmounts, ArrayList<String> mImages){
         this.mImageNames = mImageNames;
-//        this.mImages = mImages;
+        this.mImages = mImages;
+        this.mAmounts = mAmounts;
         this.mContext = mContext;
     }
 
@@ -48,24 +56,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder,final int position) {
         Log.d(TAG, "onBindViewHolder: called.");
 
-        //Glide is used to convert imageUrls into bitmap
-//        Glide.with(mContext)
-//                .asBitmap()
-//                .load(mImages.get(position))
-//                .into(holder.image);//this line adds the image and its name to the view
+
 
         //Add ImageNames alongside the images
         holder.imageName.setText(mImageNames.get(position));
+        holder.amount.setText(mAmounts.get(position));
+        byte[] decodeString = Base64.decode(mImages.get(position), Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.length);
+        holder.image.setImageBitmap(bitmap);
 
-        //onClickListener to tell user that it has been clicked
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: clicked on: "+ mImageNames.get(position));
 
-                Toast.makeText(mContext, mImageNames.get(position), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 
@@ -80,15 +80,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     //Class ViewHolder to
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-//        ImageView image;
-        TextView imageName;
+        ImageView image;
+        TextView imageName, amount;
         RelativeLayout parentLayout;
+        Button editExpense;
 
         //ViewHolder constructor
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-//            image = itemView.findViewById(R.id.image);
+            image = itemView.findViewById(R.id.show_image_test);
             imageName = itemView.findViewById(R.id.image_name);
+            amount = itemView.findViewById(R.id.recyclerViewAmountt);
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
     }
@@ -96,3 +98,50 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     //***************************************************************************************************************************************
 }
 
+//useless code in onBindViewHolder()
+//onClickListener to tell user that it has been clicked
+//        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d(TAG, "onClick: clicked on: "+ mImageNames.get(position));
+//
+//                Toast.makeText(mContext, mImageNames.get(position), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+//        holder.editExpense.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //For editing the expenses
+//                final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
+//                        ExpenseTracker.this, R.style.BottomSheetDialogTheme);
+//                bottomSheetView = LayoutInflater.from(getApplicationContext())
+//                        .inflate(
+//                                R.layout.bottom_drawer_layout,
+//                                (LinearLayout)findViewById(R.id.bottom_sheet)
+//                        );
+//                bottomSheetView.findViewById(R.id.add_image).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                        try {
+//                            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+//                            Toast.makeText(ExpenseTracker.this, "Taking Photo", Toast.LENGTH_SHORT).show();
+//                        } catch (ActivityNotFoundException e) {
+//                            // display error state to the user
+//                            Toast.makeText(ExpenseTracker.this, "Error Taking Image", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//                bottomSheetView.findViewById(R.id.add_expense).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        //TO DO: add expense and images in the database
+//                        Toast.makeText(ExpenseTracker.this, "Expense Added", Toast.LENGTH_SHORT).show();
+//                        bottomSheetDialog.dismiss();
+//                    }
+//                });
+//                bottomSheetDialog.setContentView(bottomSheetView);
+//                bottomSheetDialog.show();
+//            }
+//        });

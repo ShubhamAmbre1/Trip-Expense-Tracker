@@ -12,4 +12,5 @@ public class Constants {
     public static final String URL_SET_TRIP = ROOT_URL+"setTrip.php";
     public static final String URL_TOTAL_PEOPLE = ROOT_URL+"setTrip.php";
     public static final String URL_TRIP_ACTIVE = ROOT_URL+"tripActive.php";
+    public static final String URL_END_TRIP = ROOT_URL+"endTrip.php";
 }

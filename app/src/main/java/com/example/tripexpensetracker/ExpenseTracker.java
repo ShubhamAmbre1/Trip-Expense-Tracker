@@ -7,10 +7,13 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,12 +31,23 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ExpenseTracker extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -53,7 +67,8 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
 
     //vars
     private ArrayList<String> mNames = new ArrayList<>();
-    private ArrayList<String> mImageUrls = new ArrayList<>();
+    private ArrayList<String> mAmounts = new ArrayList<>();
+    private ArrayList<String> mImages = new ArrayList<>();
 
     //Floating action button
     FloatingActionButton fab;
@@ -62,6 +77,19 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private ImageView imageView;
     View bottomSheetView;
+
+    //Edit created list item
+    private Button edit;
+
+    //To send the images
+    Bitmap photo;
+    String imgstring;
+
+    //for bottom drawer
+    EditText amount, name;
+
+    //Recycler View Adapter
+    RecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +100,8 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
         bottomSheetDrawer();
         createDrawerLayout();
         initImageBitmap();
+
+
     }
 
     private void getCameraPermission() {
@@ -115,7 +145,14 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
                     @Override
                     public void onClick(View view) {
                         //TO DO: add expense and images in the database
-                        Toast.makeText(ExpenseTracker.this, "Expense Added", Toast.LENGTH_SHORT).show();
+                        amount = bottomSheetView.findViewById(R.id.amountPaid);
+                        name = bottomSheetView.findViewById(R.id.bottomdrawername);
+
+                        addExpense();
+                        mNames.add(name.getText().toString());
+                        mAmounts.add(amount.getText().toString());
+                        mImages.add(imgstring);
+                        initRecyclerView();
                         bottomSheetDialog.dismiss();
                     }
                 });
@@ -129,44 +166,120 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case REQUEST_IMAGE_CAPTURE:
-                if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK & null != data) {
-
-                    Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-                    //to generate random file name
-                    String fileName = "tempimg.jpg";
-
-                    try {
-                        Bitmap photo = (Bitmap) data.getExtras().get("data");
-                        //captured image set in imageview
-
-                        imageView = (ImageView) bottomSheetView.findViewById(R.id.show_image);
-                        imageView.setImageBitmap(photo);
-                    } catch (Exception e) {
-                        Toast.makeText(this, "Not working", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        }
+        photo = (Bitmap) data.getExtras().get("data");
+        imageView = bottomSheetView.findViewById(R.id.show_image);
+        imageView.setImageBitmap(photo);
     }
 
+    private void addExpense(){
+        final String username = SharedPrefManager.getInstance(this).getUsername();
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        photo.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        byte[] bytes = byteArrayOutputStream.toByteArray();
+        imgstring = android.util.Base64.encodeToString(bytes, Base64.DEFAULT);
+
+        Log.d(TAG, "endTrip(): is running");
+        //Check trip status
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                Constants.URL_ADD_EXPENSE,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "addExpense(): getting response");
+                        try{
+                            JSONObject obj = new JSONObject(response);
+                            if(!obj.getBoolean("error")){
+                                Toast.makeText(ExpenseTracker.this, "Expense Added", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch(JSONException e){
+                            Toast.makeText(getApplicationContext(), "Not Getting requests Working", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "tripActive(): Try not working");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                params.put("image", imgstring);
+                params.put("title", Integer.toString(adapter.getItemCount() + 1));
+                params.put("name", name.getText().toString());
+                params.put("cost", amount.getText().toString());
+                return params;
+            }
+        };
+
+        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
+    }
     private void initImageBitmap(){
         Log.d(TAG, "initImageBitmap: prepareing bitmap.");
 
-        mNames.add("Shubham Ambre");
-        mNames.add("Aditya Sarwankar");
-        mNames.add("Nitesh Chawan");
-        mNames.add("Mandar noob");
-        mNames.add("Chotu");
-        mNames.add("Sarvesh");
-        mNames.add("Shubham Ambre");
-        mNames.add("Aditya Sarwankar");
-        mNames.add("Nitesh Chawan");
-        mNames.add("Mandar noob");
-        mNames.add("Chotu");
+        final String username = SharedPrefManager.getInstance(this).getUsername();
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                Constants.URL_RECYCLER_VIEW,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "gettingExpense(): getting response");
+                        try{
+                            JSONArray result = new JSONArray(response);
+                            for(int i=0; i<result.length(); i++){
+                                JSONObject obj = result.getJSONObject(i);
+                                String name = obj.getString("name");
+                                String amount = obj.getString("cost");
+                                String image = obj.getString("image");
+                                mNames.add(name);
+                                mAmounts.add(amount);
+                                mImages.add(image);
+                                initRecyclerView();
+                            }
 
+                        } catch(JSONException e){
+                            Toast.makeText(getApplicationContext(), "Not Getting requests Working", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "getExpense(): Try not working");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                return params;
+            }
+        };
+
+        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
 
         initRecyclerView();
     }
@@ -178,7 +291,7 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
         //Create RecyclerViewAdapter fetching data from ArrayLists. Using RecyclerViewAdapter class we created
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mNames);
+        adapter = new RecyclerViewAdapter(this, mNames, mAmounts, mImages);
 
         //Output ArrayAdapter to the RecyclerView
         recyclerView.setAdapter(adapter);
@@ -210,16 +323,16 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
                 startActivity(new Intent(this, Login.class));
                 break;
             case R.id.nav_location:
-
-//                if(isServicesOk()){
                 startActivity(new Intent(this, ShowLocation.class));
-//                }
                 break;
             case R.id.nav_expenses:
                 startActivity(new Intent(this, ExpenseTracker.class));
                 break;
             case R.id.nav_dashboard:
                 startActivity(new Intent(this, MainActivity.class));
+                break;
+            case R.id.endTrip:
+                endTrip();
                 break;
         }
         return true;
@@ -255,5 +368,53 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
         textViewUserEmail = headerView.findViewById(R.id.display_user_email);
         textViewUserEmail.setText(SharedPrefManager.getInstance(this).getUserEmail());
     }
+    private void endTrip(){
+        final String username = SharedPrefManager.getInstance(this).getUsername();
 
+        Log.d(TAG, "endTrip(): is running");
+        //Check trip status
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                Constants.URL_END_TRIP,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "tripActive(): getting response");
+                        try{
+                            JSONObject obj = new JSONObject(response);
+                            if(!obj.getBoolean("error")){
+                                startActivity(new Intent(getApplicationContext(), StartTripActivity.class));
+                            } else {
+                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch(JSONException e){
+                            Toast.makeText(getApplicationContext(), "Not Getting requests Working", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "tripActive(): Try not working");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                return params;
+            }
+        };
+
+        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
+
+    }
 }

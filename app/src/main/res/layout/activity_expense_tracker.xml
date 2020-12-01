@@ -241,6 +241,7 @@
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/drawer_menu"
         android:background="@color/colorPrimaryBlack"
+        app:itemTextColor="@color/textcolor"
         android:layout_gravity = "start"/>
 
 

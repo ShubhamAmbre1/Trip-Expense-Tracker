@@ -91,16 +91,37 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Amount Paid"
+            android:text="Amount Paid :"
             android:textColor="@color/textcolor"
             />
 
         <EditText
+            android:id="@+id/amountPaid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter amount"
             android:textColorHint="@color/textcolor"
             android:drawableEnd="@drawable/ic_money_bottom_sheet"
+            android:layout_marginHorizontal="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter Name :"
+            android:textColor="@color/textcolor"
+            />
+
+        <EditText
+            android:id="@+id/bottomdrawername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/textcolor"
             android:layout_marginHorizontal="10dp"/>
     </LinearLayout>
 

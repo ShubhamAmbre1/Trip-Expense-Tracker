@@ -18,9 +18,20 @@ import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.navigation.NavigationView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -31,12 +42,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView textViewUsername, textViewUserEmail;
 
     //
-    private static final String TAG = "Location";
+    private static final String TAG = "MainActivity";
     private static final int ERROR_DIALOG_REQUEST = 9001;
 
     //
     CardView locationButton, expenseButton;
     Button logoutButton;
+
+    //
+    String isActive;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +62,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         isServicesOk();
         createDrawerLayout();
+
+        //check Trip if exists
+        checkTrip();
+
+
     }
 
     public void buttonClick(){
@@ -109,6 +129,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_dashboard:
                 startActivity(new Intent(this, MainActivity.class));
                 break;
+
+            case R.id.endTrip:
+                endTrip();
+                break;
         }
         return true;
     }
@@ -161,5 +185,109 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         textViewUserEmail = headerView.findViewById(R.id.display_user_email);
         textViewUserEmail.setText(SharedPrefManager.getInstance(this).getUserEmail());
+    }
+
+    private void endTrip(){
+        final String username = SharedPrefManager.getInstance(this).getUsername();
+
+        Log.d(TAG, "endTrip(): is running");
+        //Check trip status
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                Constants.URL_END_TRIP,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "tripActive(): getting response");
+                        try{
+                            JSONObject obj = new JSONObject(response);
+                            if(!obj.getBoolean("error")){
+                                startActivity(new Intent(getApplicationContext(), StartTripActivity.class));
+                            } else {
+                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch(JSONException e){
+                            Toast.makeText(getApplicationContext(), "Not Getting requests Working", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "tripActive(): Try not working");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                return params;
+            }
+        };
+
+        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
+
+    }
+
+    private void checkTrip(){
+        final String username = SharedPrefManager.getInstance(this).getUsername();
+
+        Log.d(TAG, "checkTrip(): is running");
+        //Check trip status
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                Constants.URL_TRIP_ACTIVE,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "tripActive(): getting response");
+                        try{
+                            JSONObject obj = new JSONObject(response);
+                            if(!obj.getBoolean("error")){
+                                isActive = obj.getString("activeStatus");
+                                if (isActive.equals("0")){
+                                    startActivity(new Intent(getApplicationContext(), StartTripActivity.class));
+                                } else {
+                                    return;
+                                }
+                            } else {
+                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch(JSONException e){
+                            Toast.makeText(getApplicationContext(), "Not Getting requests Working", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "tripActive(): Try not working");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                return params;
+            }
+        };
+
+        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
     }
 }

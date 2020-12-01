@@ -20,6 +20,10 @@
         <item android:id="@+id/logout"
             android:icon="@drawable/ic_user"
             android:title="Logout"/>
+
+        <item android:id="@+id/endTrip"
+            android:icon="@drawable/ic_baseline_cancel_24"
+            android:title="End Trip"/>
     </group>
 
 </menu>
