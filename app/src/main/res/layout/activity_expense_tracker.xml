@@ -108,10 +108,11 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/expense_current_expense"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_medium"
-                        android:text="Rs. 10230"
+                        android:text="Rs. 0"
                         android:textColor="#ffff"
                         android:textSize="24dp" />
 
@@ -120,11 +121,12 @@
                         android:layout_height="wrap_content">
 
                         <TextView
+                            android:id="@+id/expense_budget"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:fontFamily="@font/roboto_medium"
-                            android:text="Rs. 20000"
+                            android:text="Rs. 0"
                             android:textColor="#ffff"
                             android:textSize="18dp" />
 
@@ -156,11 +158,12 @@
                             android:layout_height="wrap_content">
 
                             <TextView
+                                android:id="@+id/expense_total_people"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
                                 android:fontFamily="@font/roboto_medium"
-                                android:text="10"
+                                android:text="0"
                                 android:textColor="#ffff" />
 
                         </RelativeLayout>
@@ -183,11 +186,12 @@
                             android:layout_height="wrap_content">
 
                             <TextView
+                                android:id="@+id/expense_price_per_member"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
                                 android:fontFamily="@font/roboto_medium"
-                                android:text="Rs. 1023"
+                                android:text="Rs. 0"
                                 android:textColor="#ffff"
 
                                 />

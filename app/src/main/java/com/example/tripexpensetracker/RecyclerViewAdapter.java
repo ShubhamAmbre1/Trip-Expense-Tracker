@@ -98,6 +98,44 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     //***************************************************************************************************************************************
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //useless code in onBindViewHolder()
 //onClickListener to tell user that it has been clicked
 //        holder.parentLayout.setOnClickListener(new View.OnClickListener() {

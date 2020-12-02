@@ -65,6 +65,8 @@ public class ShowLocation extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
     private TextView textViewUsername, textViewUserEmail;
     private static final int ERROR_DIALOG_REQUEST = 9001;
+    //display info variables
+    TextView current_expense, total_people, budget, destination_location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +78,72 @@ public class ShowLocation extends AppCompatActivity implements NavigationView.On
         //Call Create Drawer Method
         createDrawerLayout();
 
-    }
+        info();
 
+    }
+    private void info(){
+        current_expense = findViewById(R.id.main_activity_current_expense);
+        total_people = findViewById(R.id.main_activity_total_people);
+        budget = findViewById(R.id.main_activity_budget);
+        destination_location = findViewById(R.id.main_activity_location);
+
+        final String username = SharedPrefManager.getInstance(this).getUsername();
+
+        Log.d(TAG, "endTrip(): is running");
+        //Check trip status
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                Constants.URL_DASHBOARD,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "info(): getting response");
+                        try{
+                            JSONObject obj = new JSONObject(response);
+
+                            Toast.makeText(getApplicationContext(), "WORKING", Toast.LENGTH_SHORT).show();
+                            if(!obj.getBoolean("error")){
+                                if(obj.getString("current_total_expense").equals("null")){
+                                    current_expense.setText("Rs. 0");
+                                } else {
+                                    current_expense.setText("Rs. " + obj.getString("current_total_expense"));
+                                }
+                                total_people.setText(obj.getString("total_people"));
+                                budget.setText("Rs. " + obj.getString("total_expense"));
+                                destination_location.setText(obj.getString("location"));
+                            } else {
+                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch(JSONException e){
+                            Toast.makeText(getApplicationContext(), "Not Getting requests Working", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "info(): Try not working");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                return params;
+            }
+        };
+
+        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
+
+    }
     private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: getting the devices current Location");
 

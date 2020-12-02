@@ -19,4 +19,8 @@
     <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
+    <style name="TextInputLayout">
+        <item name="android:textColor">@color/textcolor</item>
+        <item name="android:textSize">13sp</item>
+    </style>
 </resources>

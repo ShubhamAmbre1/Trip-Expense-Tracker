@@ -84,9 +84,10 @@
 
 
                         <TextView
+                            android:id="@+id/main_activity_location"
                             android:layout_width="wrap_content"
                             android:layout_height="28dp"
-                            android:text="Mumbai"
+                            android:text=""
                             android:fontFamily="@font/poppinsmedium"
                             android:textColor="@color/textcolor"
                             android:textSize="20dp"
@@ -107,7 +108,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_medium"
-                        android:text="Expense"
+                        android:text="Budget"
                         android:textColor="#ffff"
                         android:textSize="24dp" />
 
@@ -116,11 +117,12 @@
                         android:layout_height="wrap_content">
 
                         <TextView
+                            android:id="@+id/main_activity_budget"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:fontFamily="@font/roboto_medium"
-                            android:text="15000 Rs"
+                            android:text="Rs"
                             android:textColor="#ffff"
                             android:textSize="18dp" />
 
@@ -152,11 +154,12 @@
                             android:layout_height="wrap_content">
 
                             <TextView
+                                android:id="@+id/main_activity_total_people"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
                                 android:fontFamily="@font/roboto_medium"
-                                android:text="10"
+                                android:text=""
                                 android:textColor="#ffff"
                                 />
 
@@ -172,7 +175,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Total Expense :"
+                            android:text="Current Expense :"
                             android:textColor="#ffff"
                             android:fontFamily="@font/poppinsmedium"/>
                         <RelativeLayout
@@ -180,11 +183,12 @@
                             android:layout_height="wrap_content">
 
                             <TextView
+                                android:id="@+id/main_activity_current_expense"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
                                 android:fontFamily="@font/roboto_medium"
-                                android:text="10"
+                                android:text="Rs"
                                 android:textColor="#ffff"
 
                                 />
@@ -342,6 +346,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/profile_button"
                 android:layout_width="160dp"
                 android:layout_height="120dp"
                 android:layout_marginLeft="18dp"

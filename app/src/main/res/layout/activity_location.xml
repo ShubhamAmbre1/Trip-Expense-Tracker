@@ -62,7 +62,8 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="10dp"
+            android:layout_marginTop="22dp"
+            app:cardCornerRadius="20dp"
             android:layout_margin="10dp">
 
             <LinearLayout
@@ -79,25 +80,27 @@
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:fontFamily="@font/poppinsbold"
-                        android:text="Start Location"
+                        android:text="Trip Location"
                         android:textColor="#ffff"
-                        android:textSize="18dp" />
+                        android:textSize="20dp" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppinsbold"
-                            android:text="Trip Destination"
-                            android:textColor="#ffff"
-                            android:textSize="18dp"
-                            android:layout_alignParentRight="true"/>
 
+                        <TextView
+                            android:id="@+id/main_activity_location"
+                            android:layout_width="wrap_content"
+                            android:layout_height="28dp"
+                            android:text="Mumbai"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:textColor="@color/textcolor"
+                            android:textSize="20dp"
+                            android:layout_alignParentRight="true"
+                            />
 
                     </RelativeLayout>
 
@@ -112,8 +115,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppinsmedium"
-                        android:text="Mumbai"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="Budget"
                         android:textColor="#ffff"
                         android:textSize="24dp" />
 
@@ -122,11 +125,12 @@
                         android:layout_height="wrap_content">
 
                         <TextView
+                            android:id="@+id/main_activity_budget"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:fontFamily="@font/poppinsmedium"
-                            android:text="Goa"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="15000 Rs"
                             android:textColor="#ffff"
                             android:textSize="18dp" />
 
@@ -149,7 +153,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Desitance Traveled"
+                            android:text="No. of People :"
                             android:textColor="#ffff"
                             android:fontFamily="@font/poppinsmedium"/>
 
@@ -158,11 +162,12 @@
                             android:layout_height="wrap_content">
 
                             <TextView
+                                android:id="@+id/main_activity_total_people"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
-                                android:fontFamily="@font/poppinsbold"
-                                android:text="5 KM"
+                                android:fontFamily="@font/roboto_medium"
+                                android:text="10"
                                 android:textColor="#ffff"
                                 />
 
@@ -177,20 +182,21 @@
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:fontFamily="@font/poppinsmedium"
-                            android:text="Total Distance"
-                            android:textColor="#ffff" />
+                            android:layout_height="wrap_content"
+                            android:text="Current Expense :"
+                            android:textColor="#ffff"
+                            android:fontFamily="@font/poppinsmedium"/>
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
                             <TextView
+                                android:id="@+id/main_activity_current_expense"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
-                                android:fontFamily="@font/poppinsbold"
-                                android:text="10 KM"
+                                android:fontFamily="@font/roboto_medium"
+                                android:text="10"
                                 android:textColor="#ffff"
 
                                 />

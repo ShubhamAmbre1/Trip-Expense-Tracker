@@ -40,6 +40,8 @@
             android:layout_marginRight="30dp"
             android:hint="@string/username"
             android:textColorHint="@color/textcolor"
+            app:hintTextAppearance="@style/TextInputLayout"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintTop_toBottomOf="@+id/textView">
@@ -49,6 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/ic_username_dark"
+                android:textColor="@color/textcolor"
 
                 tools:targetApi="jelly_bean" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -60,6 +63,8 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:hint="@string/password"
+            app:hintTextAppearance="@style/TextInputLayout"
+
             android:textColorHint="@color/textcolor"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutUsername"
             tools:layout_editor_absoluteX="0dp">
@@ -70,6 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/ic_pass"
+                android:textColor="@color/textcolor"
 
                 android:fontFamily="@font/poppinsmedium"
                 tools:targetApi="jelly_bean" />
