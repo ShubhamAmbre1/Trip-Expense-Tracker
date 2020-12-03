@@ -101,7 +101,7 @@
             android:layout_height="wrap_content"
             android:hint="Enter amount"
             android:textColorHint="@color/textcolor"
-            android:drawableEnd="@drawable/ic_money_bottom_sheet"
+            android:textColor="@color/textcolor"
             android:layout_marginHorizontal="10dp"/>
     </LinearLayout>
 
@@ -122,6 +122,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="@color/textcolor"
+            android:textColor="@color/textcolor"
             android:layout_marginHorizontal="10dp"/>
     </LinearLayout>
 

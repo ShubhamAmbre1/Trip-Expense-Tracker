@@ -114,7 +114,7 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
         per_person = findViewById(R.id.expense_price_per_member);
 
         final String username = SharedPrefManager.getInstance(this).getUsername();
-
+        Toast.makeText(this, "Updating dash", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "endTrip(): is running");
         //Check trip status
         StringRequest stringRequest = new StringRequest(
@@ -226,7 +226,10 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
                         mAmounts.add(amount.getText().toString());
                         mImages.add(imgstring);
                         initRecyclerView();
+
                         bottomSheetDialog.dismiss();
+
+
                     }
                 });
                 bottomSheetDialog.setContentView(bottomSheetView);
@@ -264,6 +267,7 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
                         try{
                             JSONObject obj = new JSONObject(response);
                             if(!obj.getBoolean("error")){
+                                info();
                                 Toast.makeText(ExpenseTracker.this, "Expense Added", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
