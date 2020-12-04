@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //display trip info
+        info();
 
         //initRecyclerView();
         initImageBitmap();
@@ -93,11 +95,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //check Trip if exists
         checkTrip();
-
-        //display trip info
-        info();
-
     }
+
     private void info(){
         current_expense = findViewById(R.id.main_activity_current_expense);
         total_people = findViewById(R.id.main_activity_total_people);
@@ -282,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         try{
                             JSONObject obj = new JSONObject(response);
                             if(!obj.getBoolean("error")){
+                                info();
                                 Toast.makeText(MainActivity.this, "Expense Added", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();

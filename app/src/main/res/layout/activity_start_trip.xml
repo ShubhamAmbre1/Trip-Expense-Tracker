@@ -40,6 +40,7 @@
         android:layout_marginRight="30dp"
         android:hint="Total People"
         android:textColorHint="@color/textcolor"
+        app:hintTextAppearance="@style/TextInputLayout"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -49,6 +50,7 @@
             android:id="@+id/totalPeople"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/textcolor"
             android:fontFamily="@font/poppinsmedium"
             tools:targetApi="jelly_bean" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -61,6 +63,7 @@
         android:layout_marginRight="30dp"
         android:hint="Expect Expense"
         android:textColorHint="@color/textcolor"
+        app:hintTextAppearance="@style/TextInputLayout"
 
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutUsername"
         tools:layout_editor_absoluteX="0dp">
@@ -68,6 +71,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/expectedExpense"
 
+            android:textColor="@color/textcolor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppinsmedium"
@@ -79,8 +83,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
+
+            android:textColor="@color/textcolor"
             android:hint="Names (eg. shubahm, aditya, ...)"
             android:textColorHint="@color/textcolor"
+            app:hintTextAppearance="@style/TextInputLayout"
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -90,6 +97,8 @@
                 android:id="@+id/names"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
+                android:textColor="@color/textcolor"
                 android:fontFamily="@font/poppinsmedium"
                 tools:targetApi="jelly_bean" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -101,6 +110,7 @@
             android:layout_marginRight="30dp"
             android:hint="Trip Destination"
             android:textColorHint="@color/textcolor"
+            app:hintTextAppearance="@style/TextInputLayout"
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -111,6 +121,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppinsmedium"
+
+                android:textColor="@color/textcolor"
                 tools:targetApi="jelly_bean" />
         </com.google.android.material.textfield.TextInputLayout>
     <ProgressBar
