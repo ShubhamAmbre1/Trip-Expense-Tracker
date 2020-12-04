@@ -287,7 +287,8 @@ public class ShowLocation extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(this, MainActivity.class));
                 break;
             case R.id.endTrip:
-                endTrip();
+               // endTrip();
+                startActivity(new Intent(this, SummaryPage.class));
                 break;
         }
         return true;

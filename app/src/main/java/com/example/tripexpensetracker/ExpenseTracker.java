@@ -409,7 +409,8 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
                 startActivity(new Intent(this, MainActivity.class));
                 break;
             case R.id.endTrip:
-                endTrip();
+                //endTrip();
+                startActivity(new Intent(this, SummaryPage.class));
                 break;
         }
         return true;
@@ -433,11 +434,9 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
             startActivity(new Intent(this, Login.class));
         }
 
-        TextView textViewUserEmail = findViewById(R.id.display_user_email);
-        TextView textViewUsername = findViewById(R.id.display_user_name);
+        TextView textViewUserEmail;
+        TextView textViewUsername;
 
-        //textViewUserEmail.setText("abcd");
-        //textViewUsername.setText(SharedPrefManager.getInstance(this).getUsername());
         View headerView = navigationView.getHeaderView(0);
         textViewUsername = headerView.findViewById(R.id.display_user_name);
         textViewUsername.setText(SharedPrefManager.getInstance(this).getUsername());

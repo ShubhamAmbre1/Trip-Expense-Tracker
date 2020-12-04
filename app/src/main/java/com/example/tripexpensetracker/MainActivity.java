@@ -408,7 +408,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.endTrip:
-                endTrip();
+                //endTrip();
+                startActivity(new Intent(this, SummaryPage.class));
                 break;
         }
         return true;

@@ -2,7 +2,7 @@ package com.example.tripexpensetracker;
 
 public class Constants {
     private static final String ROOT_URL = "https://tripexpensetracker.000webhostapp.com/v1/";
-   // private static final String ROOT_URL = "http://192.168.0.26/users/v1/";
+//    private static final String ROOT_URL = "http://192.168.0.26/users/v1/";
     public static final String URL_REGISTER = ROOT_URL+"registerUser.php";
     public static final String URL_LOGIN = ROOT_URL+"userLogin.php";
     public static final String URL_ADD_EXPENSE = ROOT_URL+"addExpense.php";
@@ -15,4 +15,5 @@ public class Constants {
     public static final String URL_END_TRIP = ROOT_URL+"endTrip.php";
     public static final String URL_DASHBOARD = ROOT_URL+"dashboard.php";
     public static final String URL_PROFILE = ROOT_URL+"profile.php";
+    public static final String URL_SUMMARY = ROOT_URL+"summary.php";
 }
