@@ -1,5 +1,6 @@
 package com.example.tripexpensetracker;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -20,7 +22,6 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
-    private static final String TAG = "RecyclerViewAdapter";
     static final int REQUEST_IMAGE_CAPTURE = 1;
     View bottomSheetView;
     //Initialize variables for imagesNames and imagesUrls
@@ -29,7 +30,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> mAmounts = new ArrayList<>();
 
     private Context mContext;
+    private static final String TAG = "Recycler View";
 
+    private ImageView dial_image;
     //***************************************************************************************************************************************
     //RecyclerViewAdapter : Constructor
     //It takes in 3 arguments Context: calling class name, imageNames, imageUrl
@@ -65,6 +68,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Bitmap bitmap = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.length);
         holder.image.setImageBitmap(bitmap);
 
+        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               final Dialog myDialog = new Dialog(mContext);
+               myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+               myDialog.setContentView(R.layout.dialog_image);
+               dial_image = myDialog.findViewById(R.id.dial_image);
+                byte[] decodeString = Base64.decode(mImages.get(position), Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.length);
+                dial_image.setImageBitmap(bitmap);
+               myDialog.show();
+            }
+        });
 
     }
 

@@ -11,10 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,8 +78,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<String> mAmounts = new ArrayList<>();
     private ArrayList<String> mImages = new ArrayList<>();
 
+    Spinner name;
+    private ArrayList<String> member_names = new ArrayList<>();
+
     RecyclerViewAdapter adapter;
-    EditText amount, name;
+    EditText amount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +211,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                     final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
                             MainActivity.this, R.style.BottomSheetDialogTheme);
+
+                    name = bottomSheetView.findViewById(R.id.names_spinner);
+                    ArrayAdapter<String> adapter_names = new ArrayAdapter<String>(
+                            getApplicationContext(),
+                            R.layout.spinner_item, member_names
+                    );
+
+                    adapter_names.setDropDownViewResource(R.layout.spinner_dropdown_layout);
+                    name.setAdapter(adapter_names);
+
                     bottomSheetView = LayoutInflater.from(getApplicationContext())
                             .inflate(
                                     R.layout.bottom_drawer_layout,
@@ -229,7 +244,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         public void onClick(View view) {
                             //TO DO: add expense and images in the database
                             amount = bottomSheetView.findViewById(R.id.amountPaid);
-                            name = bottomSheetView.findViewById(R.id.bottomdrawername);
 
                             addExpense();
 //                            mNames.add(name.getText().toString());
@@ -311,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 params.put("username", username);
                 params.put("image", imgstring);
                 params.put("title", Integer.toString(adapter.getItemCount() + 1));
-                params.put("name", name.getText().toString());
+                params.put("name", name.getSelectedItem().toString());
                 params.put("cost", amount.getText().toString());
                 return params;
             }

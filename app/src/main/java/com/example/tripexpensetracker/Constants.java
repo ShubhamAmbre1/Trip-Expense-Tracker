@@ -8,6 +8,7 @@ public class Constants {
     public static final String URL_ADD_EXPENSE = ROOT_URL+"addExpense.php";
     public static final String URL_CURRENT_TOTAL_EXPENSE = ROOT_URL+"currentTotalExpense.php";
     public static final String URL_INDIVIDUAL_CURRENT_EXPENSE = ROOT_URL+"individualCurrentExpense.php";
+    public static final String URL_GET_NAMES = ROOT_URL+"getNames.php";
     public static final String URL_RECYCLER_VIEW = ROOT_URL+"recyclerView.php";
     public static final String URL_SET_TRIP = ROOT_URL+"setTrip.php";
     public static final String URL_TOTAL_PEOPLE = ROOT_URL+"setTrip.php";

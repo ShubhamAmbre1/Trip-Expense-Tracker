@@ -12,10 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,17 +88,25 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
     String imgstring;
 
     //for bottom drawer
-    EditText amount, name;
+    EditText amount;
+
+    //Spinner
+    Spinner name;
 
     //Recycler View Adapter
     RecyclerViewAdapter adapter;
     //display info variables
     TextView current_expense, total_people, budget, per_person;
+
+    //array for names
+    ArrayList<String> member_names = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expense_tracker);
 
+        getNames();
         getCameraPermission();
         bottomSheetDrawer();
         createDrawerLayout();
@@ -105,6 +115,55 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
         info();
 
 
+    }
+
+    private void getNames(){
+        final String username = SharedPrefManager.getInstance(this).getUsername();
+
+        Log.d(TAG, "endTrip(): is running");
+        //Check trip status
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                Constants.URL_GET_NAMES,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "tripActive(): getting response");
+                        try{
+                            JSONArray result = new JSONArray(response);
+                            for(int i=0; i<result.length(); i++) {
+                                JSONObject obj = result.getJSONObject(i);
+                                member_names.add(obj.getString("name"));
+                            }
+
+                        } catch(JSONException e){
+                            Toast.makeText(getApplicationContext(), "Not Getting requests Working", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "tripActive(): Try not working");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                return params;
+            }
+        };
+
+        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
     }
 
     private void info(){
@@ -201,6 +260,16 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
                                 R.layout.bottom_drawer_layout,
                                 (LinearLayout)findViewById(R.id.bottom_sheet)
                         );
+
+                name = bottomSheetView.findViewById(R.id.names_spinner);
+                ArrayAdapter<String> adapter_names = new ArrayAdapter<String>(
+                        getApplicationContext(),
+                        R.layout.spinner_item, member_names
+                );
+
+                adapter_names.setDropDownViewResource(R.layout.spinner_dropdown_layout);
+                name.setAdapter(adapter_names);
+
                 bottomSheetView.findViewById(R.id.add_image).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -219,10 +288,10 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
                     public void onClick(View view) {
                         //TO DO: add expense and images in the database
                         amount = bottomSheetView.findViewById(R.id.amountPaid);
-                        name = bottomSheetView.findViewById(R.id.bottomdrawername);
+                        String spin_name = name.getSelectedItem().toString();
 
                         addExpense();
-                        mNames.add(name.getText().toString());
+                        mNames.add(spin_name);
                         mAmounts.add(amount.getText().toString());
                         mImages.add(imgstring);
                         initRecyclerView();
@@ -297,7 +366,7 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
                 params.put("username", username);
                 params.put("image", imgstring);
                 params.put("title", Integer.toString(adapter.getItemCount() + 1));
-                params.put("name", name.getText().toString());
+                params.put("name", name.getSelectedItem().toString());
                 params.put("cost", amount.getText().toString());
                 return params;
             }
