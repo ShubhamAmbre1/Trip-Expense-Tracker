@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -79,10 +80,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<String> mImages = new ArrayList<>();
 
     Spinner name;
-    private ArrayList<String> member_names = new ArrayList<>();
+    ArrayList<String> member_names = new ArrayList<>();
 
     RecyclerViewAdapter adapter;
     EditText amount;
+
+    int total_expense;
+    int cur_exp;
+
+    Button dialUpdate, dialEndTrip;
+    EditText dialNewBudget;
+    String updateBudget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         //display trip info
         info();
+        getNames();
 
         //initRecyclerView();
         initImageBitmap();
@@ -100,6 +109,74 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //check Trip if exists
         checkTrip();
+
+       // expenseExceeded();
+    }
+    private void expenseExceeded() {
+        if (cur_exp > total_expense) {
+            final Dialog myDialog = new Dialog(this);
+            myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            myDialog.setContentView(R.layout.expense_exceeded);
+
+            myDialog.show();
+            dialEndTrip = myDialog.findViewById(R.id.end_trip);
+            dialUpdate = myDialog.findViewById(R.id.button_update);
+            dialNewBudget = myDialog.findViewById(R.id.new_budget);
+
+            dialEndTrip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(getApplicationContext(), SummaryPage.class));
+                }
+            });
+
+            dialUpdate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    updateBudget = dialNewBudget.getText().toString();
+                    update();
+                    info();
+                }
+            });
+        }
+    }
+
+    private void update(){
+        final String username = SharedPrefManager.getInstance(this).getUsername();
+
+        Log.d(TAG, "checkTrip(): is running");
+        //Check trip status
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                Constants.URL_UPDATE,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(getApplicationContext(), "Added Expense", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                params.put("budget", updateBudget);
+                return params;
+            }
+        };
+
+        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
     }
 
     private void info(){
@@ -126,12 +203,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             if(!obj.getBoolean("error")){
                                 if(obj.getString("current_total_expense").equals("null")){
                                     current_expense.setText("Rs. 0");
+                                    cur_exp = 0;
                                 } else {
                                     current_expense.setText("Rs. " + obj.getString("current_total_expense"));
+                                    cur_exp = Integer.parseInt(obj.getString("current_total_expense"));
                                 }
                                 total_people.setText(obj.getString("total_people"));
+                                total_expense = Integer.parseInt(obj.getString("total_expense"));
                                 budget.setText("Rs. " + obj.getString("total_expense"));
                                 destination_location.setText(obj.getString("location"));
+
+                                expenseExceeded();
                             } else {
                                 Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
                             }
@@ -212,7 +294,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
                             MainActivity.this, R.style.BottomSheetDialogTheme);
 
+                    bottomSheetView = LayoutInflater.from(getApplicationContext())
+                            .inflate(
+                                    R.layout.bottom_drawer_layout,
+                                    (LinearLayout)findViewById(R.id.bottom_sheet)
+                            );
+
                     name = bottomSheetView.findViewById(R.id.names_spinner);
+
                     ArrayAdapter<String> adapter_names = new ArrayAdapter<String>(
                             getApplicationContext(),
                             R.layout.spinner_item, member_names
@@ -220,19 +309,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     adapter_names.setDropDownViewResource(R.layout.spinner_dropdown_layout);
                     name.setAdapter(adapter_names);
-
-                    bottomSheetView = LayoutInflater.from(getApplicationContext())
-                            .inflate(
-                                    R.layout.bottom_drawer_layout,
-                                    (LinearLayout)findViewById(R.id.bottom_sheet)
-                            );
                     bottomSheetView.findViewById(R.id.add_image).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             try {
                                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                                Toast.makeText(MainActivity.this, "Taking Photo", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(MainActivity.this, "Taking Photo", Toast.LENGTH_SHORT).show();
                             } catch (ActivityNotFoundException e) {
                                 // display error state to the user
                                 Toast.makeText(MainActivity.this, "Error Taking Image", Toast.LENGTH_SHORT).show();
@@ -256,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     });
                     bottomSheetDialog.setContentView(bottomSheetView);
                     bottomSheetDialog.show();
-                    Toast.makeText(MainActivity.this, "Taking Photo", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "Taking Photo", Toast.LENGTH_SHORT).show();
                 } catch (ActivityNotFoundException e) {
                     // display error state to the user
                     Toast.makeText(MainActivity.this, "Error Taking Image", Toast.LENGTH_SHORT).show();
@@ -269,12 +352,63 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
-        photo = (Bitmap) data.getExtras().get("data");
-        imageView = bottomSheetView.findViewById(R.id.show_image);
-        imageView.setImageBitmap(photo);
+        try {
+            photo = (Bitmap) data.getExtras().get("data");
+            imageView = bottomSheetView.findViewById(R.id.show_image);
+            imageView.setImageBitmap(photo);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
+    private void getNames(){
+        final String username = SharedPrefManager.getInstance(this).getUsername();
+
+        Log.d(TAG, "endTrip(): is running");
+        //Check trip status
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                Constants.URL_GET_NAMES,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "tripActive(): getting response");
+                        try{
+                            JSONArray result = new JSONArray(response);
+                            for(int i=0; i<result.length(); i++) {
+                                JSONObject obj = result.getJSONObject(i);
+                                member_names.add(obj.getString("name"));
+                            }
+
+                        } catch(JSONException e){
+                            Toast.makeText(getApplicationContext(), "Not Getting requests Working", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "tripActive(): Try not working");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                return params;
+            }
+        };
+
+        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
+    }
     private void addExpense(){
         final String username = SharedPrefManager.getInstance(this).getUsername();
 
@@ -422,7 +556,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.endTrip:
-                //endTrip();
                 startActivity(new Intent(this, SummaryPage.class));
                 break;
         }
@@ -466,11 +599,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(this, Login.class));
         }
 
-        TextView textViewUserEmail = findViewById(R.id.display_user_email);
-        TextView textViewUsername = findViewById(R.id.display_user_name);
+        TextView textViewUserEmail;
+        TextView textViewUsername;
 
-        //textViewUserEmail.setText("abcd");
-        //textViewUsername.setText(SharedPrefManager.getInstance(this).getUsername());
         View headerView = navigationView.getHeaderView(0);
         textViewUsername = headerView.findViewById(R.id.display_user_name);
         textViewUsername.setText(SharedPrefManager.getInstance(this).getUsername());
@@ -479,55 +610,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         textViewUserEmail.setText(SharedPrefManager.getInstance(this).getUserEmail());
     }
 
-    private void endTrip(){
-        final String username = SharedPrefManager.getInstance(this).getUsername();
 
-        Log.d(TAG, "endTrip(): is running");
-        //Check trip status
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.POST,
-                Constants.URL_END_TRIP,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d(TAG, "tripActive(): getting response");
-                        try{
-                            JSONObject obj = new JSONObject(response);
-                            if(!obj.getBoolean("error")){
-                                startActivity(new Intent(getApplicationContext(), StartTripActivity.class));
-                            } else {
-                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
-                        } catch(JSONException e){
-                            Toast.makeText(getApplicationContext(), "Not Getting requests Working", Toast.LENGTH_SHORT).show();
-                            Log.d(TAG, "tripActive(): Try not working");
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(
-                                getApplicationContext(),
-                                error.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
-                    }
-                }
-
-        ){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("username", username);
-                return params;
-            }
-        };
-
-        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
-
-    }
 
     private void checkTrip(){
         final String username = SharedPrefManager.getInstance(this).getUsername();

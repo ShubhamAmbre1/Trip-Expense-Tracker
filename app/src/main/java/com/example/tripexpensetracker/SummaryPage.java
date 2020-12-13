@@ -77,7 +77,7 @@ public class SummaryPage extends AppCompatActivity {
                             } else {
                                 expense = Integer.parseInt(obj.getString("current_total_expense"));
                             }
-                            Double per_person = (double)expense/total_people;
+                            int per_person = expense/total_people;
 
                             JSONArray arr = obj.getJSONArray("names");
 
@@ -91,10 +91,10 @@ public class SummaryPage extends AppCompatActivity {
                                 int amt = Integer.parseInt(amount);
 
                                 if (Integer.parseInt(amount) < per_person){
-                                    mAmounts.add(Double.toString(per_person - (double)amt));
+                                    mAmounts.add("Rs. " + (per_person - amt));
                                     mMessages.add("Should pay");
                                 } else {
-                                    mAmounts.add(Double.toString((double)amt-per_person));
+                                    mAmounts.add("Rs. " + (amt-per_person));
                                     mMessages.add("Should receive");
                                 }
                                 initRecyclerView();

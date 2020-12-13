@@ -1,6 +1,7 @@
 package com.example.tripexpensetracker;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -101,6 +103,13 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
     //array for names
     ArrayList<String> member_names = new ArrayList<>();
 
+    int total_expense;
+    int cur_exp;
+
+    Button dialUpdate, dialEndTrip;
+    EditText dialNewBudget;
+    String updateBudget;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,7 +174,72 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
 
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
     }
+    private void expenseExceeded() {
+        if (cur_exp > total_expense) {
+            final Dialog myDialog = new Dialog(this);
+            myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            myDialog.setContentView(R.layout.expense_exceeded);
 
+            myDialog.show();
+            dialEndTrip = myDialog.findViewById(R.id.end_trip);
+            dialUpdate = myDialog.findViewById(R.id.button_update);
+            dialNewBudget = myDialog.findViewById(R.id.new_budget);
+
+            dialEndTrip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(getApplicationContext(), SummaryPage.class));
+                }
+            });
+
+            dialUpdate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    updateBudget = dialNewBudget.getText().toString();
+                    update();
+                    info();
+                }
+            });
+        }
+    }
+
+    private void update(){
+        final String username = SharedPrefManager.getInstance(this).getUsername();
+
+        Log.d(TAG, "checkTrip(): is running");
+        //Check trip status
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                Constants.URL_UPDATE,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(getApplicationContext(), "Added Expense", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                params.put("budget", updateBudget);
+                return params;
+            }
+        };
+
+        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
+    }
     private void info(){
         current_expense = findViewById(R.id.expense_current_expense);
         total_people = findViewById(R.id.expense_total_people);
@@ -190,11 +264,14 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
                             if(!obj.getBoolean("error")){
                                 if(obj.getString("current_total_expense").equals("null")){
                                     current_expense.setText("Rs. 0");
+                                    cur_exp = 0;
                                 } else {
                                     current_expense.setText("Rs. " + obj.getString("current_total_expense"));
+                                    cur_exp = Integer.parseInt(obj.getString("current_total_expense"));
                                 }
                                 total_people.setText(obj.getString("total_people"));
                                 budget.setText("Rs. " +obj.getString("total_expense"));
+                                total_expense = Integer.parseInt(obj.getString("total_expense"));
                                 int total_people = Integer.parseInt(obj.getString("total_people"));
                                 int expense;
                                 if (obj.getString("current_total_expense").equals("null")) {
@@ -202,7 +279,9 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
                                 } else {
                                     expense = Integer.parseInt(obj.getString("current_total_expense"));
                                 }
-                                per_person.setText("Rs. " +Double.toString((double)expense/total_people));
+                                per_person.setText("Rs. " + (expense/total_people));
+
+                                expenseExceeded();
                             } else {
                                 Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
                             }
@@ -310,10 +389,13 @@ public class ExpenseTracker extends AppCompatActivity implements NavigationView.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        photo = (Bitmap) data.getExtras().get("data");
-        imageView = bottomSheetView.findViewById(R.id.show_image);
-        imageView.setImageBitmap(photo);
+        try {
+            photo = (Bitmap) data.getExtras().get("data");
+            imageView = bottomSheetView.findViewById(R.id.show_image);
+            imageView.setImageBitmap(photo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void addExpense(){

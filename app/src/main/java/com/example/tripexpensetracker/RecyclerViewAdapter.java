@@ -63,7 +63,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         //Add ImageNames alongside the images
         holder.imageName.setText(mImageNames.get(position));
-        holder.amount.setText(mAmounts.get(position));
+        holder.amount.setText("Rs. " + mAmounts.get(position));
         byte[] decodeString = Base64.decode(mImages.get(position), Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.length);
         holder.image.setImageBitmap(bitmap);

@@ -17,4 +17,5 @@ public class Constants {
     public static final String URL_DASHBOARD = ROOT_URL+"dashboard.php";
     public static final String URL_PROFILE = ROOT_URL+"profile.php";
     public static final String URL_SUMMARY = ROOT_URL+"summary.php";
+    public static final String URL_UPDATE = ROOT_URL+"updateExpense.php";
 }
