@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         try{
                             JSONObject obj = new JSONObject(response);
 
-                            Toast.makeText(getApplicationContext(), "WORKING", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "WORKING", Toast.LENGTH_SHORT).show();
                             if(!obj.getBoolean("error")){
                                 if(obj.getString("current_total_expense").equals("null")){
                                     current_expense.setText("Rs. 0");
